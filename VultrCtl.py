@@ -7,7 +7,6 @@ import random
 import ssl
 import urllib.parse
 import urllib.request
-import uuid
 from urllib.error import HTTPError
 
 TARGET_REGION = random.choice(['Tokyo', 'Singapore', 'Sydney'])
@@ -94,7 +93,7 @@ def deploy(api_key):
         'VPSPLANID': get_target_plan(),
         'OSID': get_snapshot_os(),
         'SNAPSHOTID': next(iter(get_current_snaprshots(api_key))),
-        'label': 'AUTO_VPS_' + datetime.date.today().strftime('%Y%m%d_') + uuid.uuid4().hex
+        'label': 'AUTO_VPS_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
     }
     return post(CREATE_VPS, api_key, data)
 
