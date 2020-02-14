@@ -1,9 +1,15 @@
 #!/usr/local/bin/python3
 
-import urllib.request
+import argparse
+import datetime
+import json
+import os
+import random
+import ssl
 import urllib.parse
+import urllib.request
+import uuid
 from urllib.error import HTTPError
-import uuid, ssl, os, argparse, json, random, datetime
 
 TARGET_REGION = random.choice(['Tokyo', 'Singapore', 'Sydney'])
 TARGET_PLAN = 5 # $5.00 per month
@@ -30,6 +36,7 @@ def get(url, api_key = None):
     except HTTPError as e:
         print('Error code: ', e.code)
         print('Reason: ', e.reason)
+        return None
 
 
 def post(url, api_key, data):
