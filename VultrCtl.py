@@ -3,7 +3,6 @@
 import argparse
 import datetime
 import json
-import os
 import random
 import ssl
 import urllib.parse
@@ -22,6 +21,7 @@ OS_LIST = 'https://api.vultr.com/v1/os/list'
 CREATE_VPS = 'https://api.vultr.com/v1/server/create'
 DESTROY = 'https://api.vultr.com/v1/server/destroy'
 
+context = ssl._create_unverified_context()
 def get_header(api_key):
     return {'API-Key': api_key}
 
@@ -84,37 +84,21 @@ def get_snapshot_os():
             return os['OSID']
 
 
-def deploy_vps_from_snapshot(api_key, region, plan, os, snapshot, label):
-    data = {
-        'DCID': region,
-        'VPSPLANID': plan,
-        'OSID': os,
-        'SNAPSHOTID': snapshot,
-        'label': label
-    }
-    return post(CREATE_VPS, api_key, data)
-
-
-def ping_vps(vps):
-    ip = vps['main_ip']
-    response = os.system("ping -c 4 " + ip)
-    return response == 0
-
-
 def destroy(api_key, sub_id):
     post(DESTROY, api_key, {'SUBID': sub_id})
 
 
 def deploy(api_key):
-    snapshot = next(iter(get_current_snaprshots(api_key)))
-    region = get_target_region()
-    plan = get_target_plan()
-    os = get_snapshot_os()
-    label = 'AUTO_VPS_' + datetime.date.today().strftime('%Y%m%d_') + uuid.uuid4().hex
-    deploy_vps_from_snapshot(api_key, region, plan, os, snapshot, label)
+    data = {
+        'DCID': get_target_region(),
+        'VPSPLANID': get_target_plan(),
+        'OSID': get_snapshot_os(),
+        'SNAPSHOTID': next(iter(get_current_snaprshots(api_key))),
+        'label': 'AUTO_VPS_' + datetime.date.today().strftime('%Y%m%d_') + uuid.uuid4().hex
+    }
+    return post(CREATE_VPS, api_key, data)
 
 
-context = ssl._create_unverified_context()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Vultr VPS controller tool')
     parser.add_argument('-k', '--key', required=True, help='API Key of Vultr account', action='store')
@@ -130,11 +114,9 @@ if __name__ == '__main__':
         vpss = get_current_vpses(api_key)
 
         if args.action == 'r':
-            # start deploy new VPS
             deploy(api_key)
 
         if vpss:
             for vps in vpss.values():
-                sub_id = vps['SUBID']
                 if args.action == 'd' or args.destroy:
-                    destroy(api_key, sub_id)
+                    destroy(api_key, vps['SUBID'])
