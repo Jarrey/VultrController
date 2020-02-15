@@ -9,7 +9,7 @@ import urllib.parse
 import urllib.request
 from urllib.error import HTTPError
 
-TARGET_REGION = random.choice(['Tokyo', 'Singapore', 'Sydney'])
+TARGET_REGION = random.choice(['Sydney'])
 TARGET_PLAN = 5 # $5.00 per month
 
 SERVER_LIST = 'https://api.vultr.com/v1/server/list'
@@ -101,21 +101,18 @@ def deploy(api_key):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Vultr VPS controller tool')
     parser.add_argument('-k', '--key', required=True, help='API Key of Vultr account', action='store')
-    parser.add_argument('-a', '--action', required=True, choices=['d', 'n', 'r'], help='Action for Vultr VPSs, "destroy", "new" or "renew"]', action='store')
+    parser.add_argument('-a', '--action', required=True, choices=['d', 'r'], help='Action for Vultr VPSs, "destroy" or "renew"]', action='store')
     parser.add_argument('-d', '--destroy', help='Whether destroy the legacy VPS instance when renew VPS', action='store_true')
 
     args = parser.parse_args()
     api_key = args.key
 
-    if args.action == 'n':
+    vpss = get_current_vpses(api_key)
+
+    if args.action == 'r':
         deploy(api_key)
-    else:
-        vpss = get_current_vpses(api_key)
 
-        if args.action == 'r':
-            deploy(api_key)
-
-        if vpss:
-            for vps in vpss.values():
-                if args.action == 'd' or args.destroy:
-                    destroy(api_key, vps['SUBID'])
+    if vpss:
+        for vps in vpss.values():
+            if args.action == 'd' or args.destroy:
+                destroy(api_key, vps['SUBID'])
