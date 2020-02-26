@@ -114,7 +114,7 @@ def choice_region(arg):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Vultr VPS controller tool')
     parser.add_argument('-k', '--key', required=True, help='API Key of Vultr account', action='store')
-    parser.add_argument('-r', '--region', choices=['Sydney', 'Tokyo', 'Singapore'], help='VPS region to deploy, default is rendom choice from build-in list', action='store')
+    parser.add_argument('-r', '--region', help='VPS region to deploy, default is rendom choice from build-in list', action='store')
     parser.add_argument('-a', '--action', required=True, choices=['d', 'r'], help='Action for Vultr VPSs, "destroy" or "renew"]', action='store')
     parser.add_argument('-d', '--destroy', help='Whether destroy the legacy VPS instance when renew VPS', action='store_true')
 
