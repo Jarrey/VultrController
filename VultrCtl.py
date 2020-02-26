@@ -12,13 +12,14 @@ from urllib.error import HTTPError
 TARGET_REGION = ['Sydney', 'Tokyo', 'Singapore']
 TARGET_PLAN = 5 # $5.00 per month
 
-SERVER_LIST = 'https://api.vultr.com/v1/server/list'
-SNAPSHOT_LIST = 'https://api.vultr.com/v1/snapshot/list'
-PLAN_LIST = 'https://api.vultr.com/v1/plans/list'
-REGIONS_LIST = 'https://api.vultr.com/v1/regions/list'
-OS_LIST = 'https://api.vultr.com/v1/os/list'
-CREATE_VPS = 'https://api.vultr.com/v1/server/create'
-DESTROY = 'https://api.vultr.com/v1/server/destroy'
+API = 'https://api.vultr.com/v1/'
+SERVER_LIST = API + 'server/list'
+SNAPSHOT_LIST = API + 'snapshot/list'
+PLAN_LIST = API + 'plans/list'
+REGIONS_LIST = API + 'regions/list'
+OS_LIST = API + 'os/list'
+CREATE_VPS = API + 'server/create'
+DESTROY = API + 'server/destroy'
 
 context = ssl._create_unverified_context()
 def get_header(api_key):
