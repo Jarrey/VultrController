@@ -100,15 +100,15 @@ def deploy(api_key, region):
 
 
 def choice_region(arg):
-    arg = arg.lower()
-    if arg == 'sy' or arg == 'sydney':
-        return 'Sydney'
-    elif arg == 'tk' or arg == 'tokyo':
-        return 'Tokyo'
-    elif arg == 'sg' or arg == 'singapore':
-        return'Singapore'
-    else:
-        return random.choice(TARGET_REGION)
+    if arg is not None:
+        arg = arg.lower()
+        if arg == 'sy' or arg == 'sydney':
+            return 'Sydney'
+        elif arg == 'tk' or arg == 'tokyo':
+            return 'Tokyo'
+        elif arg == 'sg' or arg == 'singapore':
+            return'Singapore'
+    return random.choice(TARGET_REGION)
 
 
 if __name__ == '__main__':
